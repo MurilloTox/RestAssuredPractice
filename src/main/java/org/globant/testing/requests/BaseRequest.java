@@ -2,10 +2,13 @@ package org.globant.testing.requests;
 
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import org.globant.testing.models.Client;
 import org.globant.testing.utils.Constants;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static io.restassured.RestAssured.given;
 
 public class BaseRequest {
     /**
@@ -17,13 +20,12 @@ public class BaseRequest {
      * @return Response
      */
     protected Response requestGet(String endpoint, Map<String, ?> headers) {
-        return RestAssured.given()
+        return given()
                 .contentType(Constants.VALUE_CONTENT_TYPE)
                 .headers(headers)
                 .when()
                 .get(endpoint);
     }
-
     /**
      * This is a function to create a new element using rest-assured
      *
@@ -34,7 +36,7 @@ public class BaseRequest {
      * @return Response
      */
     protected Response requestPost(String endpoint, Map<String, ?> headers, Object body) {
-        return RestAssured.given()
+        return given()
                 .contentType(Constants.VALUE_CONTENT_TYPE)
                 .headers(headers)
                 .body(body)
@@ -52,7 +54,7 @@ public class BaseRequest {
      * @return Response
      */
     protected Response requestPut(String endpoint, Map<String, ?> headers, Object body) {
-        return RestAssured.given()
+        return given()
                 .contentType(Constants.VALUE_CONTENT_TYPE)
                 .headers(headers)
                 .body(body)
@@ -69,7 +71,7 @@ public class BaseRequest {
      * @return Response
      */
     protected Response requestDelete(String endpoint, Map<String, ?> headers) {
-        return RestAssured.given()
+        return given()
                 .contentType(Constants.VALUE_CONTENT_TYPE)
                 .headers(headers)
                 .when()

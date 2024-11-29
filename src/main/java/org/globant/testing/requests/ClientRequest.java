@@ -9,7 +9,10 @@ import org.globant.testing.utils.Constants;
 import org.globant.testing.utils.JsonFileReader;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static io.restassured.RestAssured.given;
 
 public class ClientRequest extends BaseRequest {
 
@@ -33,6 +36,17 @@ public class ClientRequest extends BaseRequest {
      */
     public Response getClient(String clientId) {
         endpoint = String.format(Constants.URL_WITH_PARAM, Constants.CLIENTS_PATH, clientId);
+        return requestGet(endpoint, createBaseHeaders());
+    }
+
+    /**
+     Get client by name
+
+     @param name string
+     @return rest-assured response
+     */
+    public Response getClientByName(String name) {
+        endpoint = String.format(Constants.URL_WITH_OTHER_PARAM, Constants.CLIENTS_PATH, "name", name);
         return requestGet(endpoint, createBaseHeaders());
     }
 
@@ -72,6 +86,22 @@ public class ClientRequest extends BaseRequest {
         JsonFileReader jsonFile = new JsonFileReader();
         return this.createClient(jsonFile.getClientByJson(Constants.DEFAULT_CLIENT_FILE_PATH));
     }
+
+    public List<Response> createDefaultClients() {
+        JsonFileReader jsonFile = new JsonFileReader();
+
+        List<Client> clients = jsonFile.getClientsByJson(Constants.DEFAULT_CLIENT_FILE_PATH);
+        List<Response> responses = new ArrayList<>();
+
+        for (Client client : clients) {
+            Response response = this.createClient(client);
+            responses.add(response);
+        }
+
+        return responses;
+    }
+
+
 
     /**
      Create client

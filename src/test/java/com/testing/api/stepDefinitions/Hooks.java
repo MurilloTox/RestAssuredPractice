@@ -1,4 +1,4 @@
-package com.testing.api.testDefinition;
+package com.testing.api.stepDefinitions;
 
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
