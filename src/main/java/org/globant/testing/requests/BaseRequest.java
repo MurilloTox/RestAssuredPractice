@@ -44,6 +44,14 @@ public class BaseRequest {
                 .post(endpoint);
     }
 
+    protected Response requestPost(String endpoint, Map<String, ?> headers) {
+        return given()
+                .contentType(Constants.VALUE_CONTENT_TYPE)
+                .headers(headers)
+                .when()
+                .post(endpoint);
+    }
+
     /**
      * This is a function to update an element using rest-assured
      *

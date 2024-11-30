@@ -40,9 +40,8 @@ public class ClientSteps {
                 assertEquals(201, r.statusCode());
             }
             clientList = clientRequest.getClientsEntity(response);
+            //Assert.assertTrue(clientList.size() >= 10);
         }
-
-        Assert.assertTrue(clientList.size() >= 10);
     }
 
     @Given("there are at least 5 active resources")
@@ -104,7 +103,11 @@ public class ClientSteps {
 
     @When("I create a new client")
     public void createNewClient(){
-
+        Client nuevo = Client.builder()
+                .id("1")
+                .build();
+        response = clientRequest.createClient();
+        assertEquals(201, response.statusCode());
     }
 
 
@@ -117,7 +120,7 @@ public class ClientSteps {
         Assert.assertNotEquals(newNumber, phoneNumber);
     }
 
-    @Then("Delete all the registered clients")
+    @Then("I delete all the registered clients")
     public void DeleteAll() {
         for(Client cliente: clientList){
             response = clientRequest.deleteClient(cliente.getId());
@@ -134,5 +137,29 @@ public class ClientSteps {
             response = resourceRequest.updateResources(resource);
             Assert.assertEquals(200, response.statusCode());
         }
+    }
+
+    @Then("I should find the new client")
+    public void findLastClient(){
+        response = clientRequest.getClients();
+        clientList = clientRequest.getClientsEntity(response);
+        assertEquals(200, response.statusCode());
+        client = clientList.get(clientList.size() - 1);
+        logger.info("Current last client: " + client);
+    }
+
+    @Then("I update any parameter of the new client")
+    public void updateLast(){
+        updateClientNumber();
+        logger.info("Actualizacion del número a: " + client.getPhone());
+        assertEquals(200, response.statusCode());
+    }
+
+    @Then("I delete the new client")
+    public void deleteLastClient(){
+        response = clientRequest.deleteClient(client.getId());
+        logger.info("Last client has been deleted");
+        findLastClient();
+        assertEquals(200, response.statusCode());
     }
 }

@@ -102,6 +102,11 @@ public class ClientRequest extends BaseRequest {
         return requestPost(endpoint, createBaseHeaders(), client);
     }
 
+    public Response createClient() {
+        endpoint = String.format(Constants.URL, Constants.CLIENTS_PATH);
+        return requestPost(endpoint, createBaseHeaders());
+    }
+
     public Client getClientEntity(String clientJson) {
         Gson gson = new Gson();
         return gson.fromJson(clientJson, Client.class);

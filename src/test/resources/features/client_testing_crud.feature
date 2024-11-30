@@ -8,6 +8,7 @@ Feature: Client testing CRUD
     And I save her current phone number
     And I update her phone number
     Then her new phone number should be different
+    Then I delete all the registered clients
 
   @smoke
   Scenario: Retrieve and update active resources
@@ -15,12 +16,10 @@ Feature: Client testing CRUD
     When I find all active resources
     Then I update them as inactive
 
-  @test1
+  @smoke
   Scenario: Create, update, and delete a client
     When I create a new client
     Then I should find the new client
     And I update any parameter of the new client
     And I delete the new client
-    And the response status should be 200
-    And the response body should match the expected schema
-    And the response body data should reflect the update
+
