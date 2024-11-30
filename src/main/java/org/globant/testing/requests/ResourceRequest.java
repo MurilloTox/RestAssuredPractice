@@ -2,7 +2,6 @@ package org.globant.testing.requests;
 
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
-import org.globant.testing.models.Client;
 import org.globant.testing.models.Resource;
 import org.globant.testing.utils.Constants;
 import org.globant.testing.utils.JsonFileReader;
@@ -23,9 +22,19 @@ public class ResourceRequest extends BaseRequest{
         return requestGet(endpoint, createBaseHeaders());
     }
 
+    public Response getResources() {
+        endpoint = String.format(Constants.URL, Constants.RESOURCES_PATH);
+        return requestGet(endpoint, createBaseHeaders());
+    }
+
     public Response updateResources(Resource resource){
         endpoint = String.format(Constants.URL_WITH_PARAM, Constants.RESOURCES_PATH, resource.getId());
         return requestPut(endpoint, createBaseHeaders(), resource);
+    }
+
+    public Response createNewResource() {
+        endpoint = String.format(Constants.URL, Constants.RESOURCES_PATH);
+        return requestPost(endpoint, createBaseHeaders());
     }
 
 

@@ -23,3 +23,8 @@ Feature: Client testing CRUD
     And I update any parameter of the new client
     And I delete the new client
 
+  @smoke
+  Scenario: Update the latest resource
+    Given there are at least 15 resources
+    When I find the latest resource
+    And I update all the parameters of this resource

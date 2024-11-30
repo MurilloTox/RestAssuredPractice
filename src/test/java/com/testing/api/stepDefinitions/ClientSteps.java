@@ -50,14 +50,27 @@ public class ClientSteps {
         resourceList = resourceRequest.getResourcesEntity(response);
         assertEquals(200, response.statusCode());
         Assert.assertTrue(resourceList.size() >= 5);
-        /*if (resourceList.size() < 5) {
-            List<Response> responses = clientRequest.createDefaultClients();
-            for (Response r : responses) {
-                assertEquals(201, r.statusCode());
-            }
-            clientList = clientRequest.getClientsEntity(response);
-        }*/
+        while (resourceList.size() < 15){
+            response = resourceRequest.createNewResource();
+            response = resourceRequest.getActiveResources();
+            resourceList = resourceRequest.getResourcesEntity(response);
+            assertEquals(200, response.statusCode());
+        }
     }
+
+    @Given("there are at least 15 resources")
+    public void hereAreAtLeast15Resources(){
+        response = resourceRequest.getResources();
+        resourceList = resourceRequest.getResourcesEntity(response);
+        assertEquals(200, response.statusCode());
+        while (resourceList.size() < 15){
+            response = resourceRequest.createNewResource();
+            response = resourceRequest.getResources();
+            resourceList = resourceRequest.getResourcesEntity(response);
+            assertEquals(200, response.statusCode());
+        }
+    }
+
 
     @When("I find all active resources")
     public void findAllActiveResources(){
@@ -67,6 +80,9 @@ public class ClientSteps {
 
     @When("I find the first client named {string}")
     public void findClient(String clientName) {
+        response = clientRequest.getClients();
+        clientList = clientRequest.getClientsEntity(response);
+        assertEquals(200, response.statusCode());
         boolean clientFound = false;
         for (Client client : clientList) {
             if (client.getName().equals(clientName)) {
@@ -103,13 +119,31 @@ public class ClientSteps {
 
     @When("I create a new client")
     public void createNewClient(){
-        Client nuevo = Client.builder()
-                .id("1")
-                .build();
         response = clientRequest.createClient();
         assertEquals(201, response.statusCode());
     }
 
+    @When("I find the latest resource")
+    public void findLastResource(){
+        resource = resourceList.get(resourceList.size()-1);
+        logger.info("Current last resource: " + resource);
+    }
+
+    @When("I update all the parameters of this resource")
+    public void updateAllOfLastResource(){
+        resource.setName("LaptopGB");
+        resource.setTrademark("Globant");
+        resource.setStock("10");
+        resource.setPrice("300.00");
+        resource.setDescription("Laptop proporcionada por Globant");
+        resource.setTags("Tecnologia");
+        if (resource.isActive()){
+            resource.setActive(false);
+        }
+        logger.info("Updated resource: " + resource);
+        response = resourceRequest.updateResources(resource);
+        Assert.assertEquals(200, response.statusCode());
+    }
 
     @Then("her new phone number should be different")
     public void validatePhoneNumber() {
