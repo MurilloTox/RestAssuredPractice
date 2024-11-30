@@ -12,7 +12,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import static io.restassured.RestAssured.given;
 
 public class ClientRequest extends BaseRequest {
 
@@ -36,17 +35,6 @@ public class ClientRequest extends BaseRequest {
      */
     public Response getClient(String clientId) {
         endpoint = String.format(Constants.URL_WITH_PARAM, Constants.CLIENTS_PATH, clientId);
-        return requestGet(endpoint, createBaseHeaders());
-    }
-
-    /**
-     Get client by name
-
-     @param name string
-     @return rest-assured response
-     */
-    public Response getClientByName(String name) {
-        endpoint = String.format(Constants.URL_WITH_OTHER_PARAM, Constants.CLIENTS_PATH, "name", name);
         return requestGet(endpoint, createBaseHeaders());
     }
 

@@ -1,6 +1,5 @@
 package com.testing.api.stepDefinitions;
 
-import io.cucumber.java.After;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
@@ -8,7 +7,9 @@ import io.restassured.response.Response;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.globant.testing.models.Client;
+import org.globant.testing.models.Resource;
 import org.globant.testing.requests.ClientRequest;
+import org.globant.testing.requests.ResourceRequest;
 import org.junit.Assert;
 
 import java.util.List;
@@ -19,8 +20,11 @@ import static org.junit.Assert.assertEquals;
 public class ClientSteps {
     private static final Logger logger = LogManager.getLogger(ClientSteps.class);
     private final ClientRequest clientRequest = new ClientRequest();
+    private final ResourceRequest resourceRequest = new ResourceRequest();
     private Response response;
+    private Resource resource;
     private Client client;
+    private List<Resource> resourceList;
     private List<Client> clientList;
     private String phoneNumber;
 
@@ -39,6 +43,27 @@ public class ClientSteps {
         }
 
         Assert.assertTrue(clientList.size() >= 10);
+    }
+
+    @Given("there are at least 5 active resources")
+    public void thereAreAtLeast5ActiveResources() {
+        response = resourceRequest.getActiveResources();
+        resourceList = resourceRequest.getResourcesEntity(response);
+        assertEquals(200, response.statusCode());
+        Assert.assertTrue(resourceList.size() >= 5);
+        /*if (resourceList.size() < 5) {
+            List<Response> responses = clientRequest.createDefaultClients();
+            for (Response r : responses) {
+                assertEquals(201, r.statusCode());
+            }
+            clientList = clientRequest.getClientsEntity(response);
+        }*/
+    }
+
+    @When("I find all active resources")
+    public void findAllActiveResources(){
+        response = resourceRequest.getActiveResources();
+        resourceList = resourceRequest.getResourcesEntity(response);
     }
 
     @When("I find the first client named {string}")
@@ -77,6 +102,12 @@ public class ClientSteps {
         response = clientRequest.updateClient(client, client.getId());
     }
 
+    @When("I create a new client")
+    public void createNewClient(){
+
+    }
+
+
     @Then("her new phone number should be different")
     public void validatePhoneNumber() {
         response = clientRequest.getClient(client.getId());
@@ -93,5 +124,15 @@ public class ClientSteps {
         }
         assertEquals(200, response.getStatusCode());
         logger.info("clientes eliminados");
+    }
+
+    @Then("I update them as inactive")
+    public void updateAllActive(){
+        for (Resource resource:resourceList){
+            resource.setActive(false);
+            logger.info(resource);
+            response = resourceRequest.updateResources(resource);
+            Assert.assertEquals(200, response.statusCode());
+        }
     }
 }
